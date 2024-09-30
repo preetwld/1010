@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef } from 'react'
-import { Upload, HardDrive, Users, Link, Search, FileType, Home, Folder, Mail, Phone } from 'lucide-react'
+import { Users, Link, Search, FileType, Home, Folder, Mail, Phone } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -9,8 +9,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Label } from "@/components/ui/label"
 import { QRCodeSVG } from 'qrcode.react'
 
-const FileInput = ({ id, label, onChange }) => {
-  const inputRef = useRef(null)
+const FileInput = ({ id, label, onChange }: { id: string; label: string; onChange: (event: React.ChangeEvent<HTMLInputElement>) => void }) => {
+  const inputRef = useRef<HTMLInputElement>(null)
 
   return (
     <div className="flex flex-col items-center">
@@ -26,16 +26,16 @@ const FileInput = ({ id, label, onChange }) => {
         ref={inputRef}
         onChange={onChange}
         className="hidden"
-        webkitdirectory="true"
-        directory="true"
+        
+        
       />
     </div>
   )
 }
 
 export function MainPage() {
-  const [rootDirectory, setRootDirectory] = useState<string | null>(null)
-  const [outputDirectory, setOutputDirectory] = useState<string | null>(null)
+  const [rootDirectory, setRootDirectory] = useState<string>('')
+  const [outputDirectory, setOutputDirectory] = useState<string>('')
   const [searchOption, setSearchOption] = useState<string>('keywords')
   const [convertFile, setConvertFile] = useState<string | null>(null)
   const [convertFormat, setConvertFormat] = useState<string>('xml')
@@ -69,7 +69,7 @@ export function MainPage() {
     alert('Callback request submitted!')
   }
 
-  const handleFileChange = (setter) => (event) => {
+  const handleFileChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
     if (files && files[0]) {
       setter(files[0].name)
@@ -120,7 +120,7 @@ export function MainPage() {
               <DialogHeader>
                 <DialogTitle>Connect to Our Expert</DialogTitle>
                 <DialogDescription>
-                  Choose how you'd like to connect with our expert.
+                  Choose how you&apos;d like to connect with our expert.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
