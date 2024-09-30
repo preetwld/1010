@@ -9,6 +9,12 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Label } from "@/components/ui/label"
 import { QRCodeSVG } from 'qrcode.react'
 
+// Add this type declaration at the top of your file
+export type CustomInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  webkitdirectory?: string;
+  directory?: string;
+};
+
 const FileInput = ({ id, label, onChange }: {
   id: string;
   label: string;
@@ -30,8 +36,7 @@ const FileInput = ({ id, label, onChange }: {
         ref={inputRef}
         onChange={onChange}
         className="hidden"
-        webkitdirectory="true"
-        directory="true"
+       
       />
     </div>
   )
