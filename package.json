@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node your-server-file.js",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "dev": "next dev"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.1",
@@ -16,6 +16,8 @@
     "@radix-ui/react-slot": "^1.1.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "embla-carousel-react": "^8.3.0",
+    "framer-motion": "^11.9.0",
     "lucide-react": "^0.446.0",
     "next": "14.2.13",
     "qrcode.react": "^4.0.1",

@@ -1,258 +1,156 @@
 "use client"
 
-import { useState, useRef, Dispatch, SetStateAction } from 'react'
-import { Users, Link, Search, FileType, Home, Folder, Mail, Phone } from 'lucide-react'
+import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
-import { QRCodeSVG } from 'qrcode.react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Carousel } from "@/components/ui/carousel"
+import { Search, FileText, Database, FileSearch } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'  // Add this import
 
-const FileInput = ({
-  id,
-  label,
-  onChange,
-  webkitdirectory,
-  directory
-}: {
-  id: string;
-  label: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  webkitdirectory?: boolean; // Optional prop
-  directory?: boolean; // Optional prop
-}) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+const ads = [
+  {
+    title: "AI-Powered Document Conversion",
+    description: "Transform non-readable files into machine-readable formats effortlessly.",
+    cta: "Get Started"
+  },
+  {
+    title: "Smart Automation Solutions",
+    description: "Streamline your document management with our AI ecosystem.",
+    cta: "Learn More"
+  },
+  {
+    title: "Enhance Data Accessibility",
+    description: "Convert documents to XML, JSON, CSV, and more with ease.",
+    cta: "Try Now"
+  }
+]
 
-  return (
-    <div className="flex flex-col items-center">
-      <Label htmlFor={id} className="cursor-pointer">
-        <div className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[#2A4B40] rounded-lg hover:bg-[#E8D5B5] transition-colors">
-          <Folder className="w-8 h-8 text-[#2A4B40] mb-2" />
-          <span className="text-sm text-[#2A4B40]">{label}</span>
-        </div>
-      </Label>
-      <input
-        type="file"
-        id={id}
-        ref={inputRef}
-        onChange={onChange}
-        className="hidden"
-        {...(webkitdirectory ? { webkitdirectory: 'true' } : {})} // Conditional attribute spreading
-        {...(directory ? { directory: 'true' } : {})} // Conditional attribute spreading
-      />
-    </div>
-  );
-};
-
+const achievements = [
+  { icon: <Search className="w-6 h-6" />, text: "AI-based keyword searchability in any directory", tech: "NLP & Information Retrieval" },
+  { icon: <FileText className="w-6 h-6" />, text: "AI data extraction", tech: "Machine Learning & OCR" },
+  { icon: <Database className="w-6 h-6" />, text: "Search through context", tech: "Semantic Analysis & Vector DBs" },
+  { icon: <FileSearch className="w-6 h-6" />, text: "Data summarization", tech: "Transformer Models & NLG" }
+]
 
 export default function Component() {
-  const [rootDirectory, setRootDirectory] = useState<File | null>(null)
-  const [outputDirectory, setOutputDirectory] = useState<string | null>(null)
-  const [searchOption, setSearchOption] = useState<string>('keywords')
-  const [convertFile, setConvertFile] = useState<string | null>(null)
-  const [convertFormat, setConvertFormat] = useState<string>('xml')
-  const [phoneNumber, setPhoneNumber] = useState<string>('')
-  const [sshLink, setSSHLink] = useState<string>('')
+  const [currentAd, setCurrentAd] = useState(0)
+  const [formType, setFormType] = useState("")
+  const router = useRouter()  // Add this line
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentAd((prev) => (prev + 1) % ads.length)
+    }, 5000) // Changed from 10000 to 5000
+    return () => clearInterval(timer)
+  }, [])
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>, setter: (value: string) => void) => {
-    e.preventDefault()
-    e.stopPropagation()
-    const files = e.dataTransfer.files
-    if (files && files[0]) {
-      setter(files[0]) // Set the entire File object
-    }
-  }
-
-  const generateSSHLink = () => {
-    const randomString = Math.random().toString(36).substring(7)
-    setSSHLink(`ssh://hashmonks-${randomString}.example.com`)
-  }
-
-  const handleCallbackRequest = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Here you would typically send the phone number to your backend
-    console.log(`Callback requested for: ${phoneNumber}`)
-    setPhoneNumber('')
-    alert('Callback request submitted!')
-  }
-
-  const handleFileChange = (setter: React.Dispatch<React.SetStateAction<File | null>>) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files
-    if (files && files[0]) {
-      setter(files[0]) // Set the entire File object
-    }
+  const handleGetStarted = () => {
+    router.push('/pages')  // This will redirect to the page.tsx in the pages directory
   }
 
   return (
-    <div className="min-h-screen bg-[#F5E6D3] text-[#2A4B40] font-mono">
-      <nav className="bg-[#2A4B40] text-[#F5E6D3] p-4 flex justify-between items-center">
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-[#F5E6D3] rounded-full flex items-center justify-center">
-            <span className="text-[#2A4B40] font-bold text-xl">#</span>
-          </div>
-          <span className="text-2xl font-bold tracking-tight">HashMonks</span>
+    <div className="min-h-screen bg-[#F5E6D3] text-[#2A4B40]">
+      <nav className="flex items-center justify-between p-4 border-b border-[#2A4B40]">
+        <div className="flex items-center space-x-4">
+          <img src="/placeholder.svg" alt="TransformDoco Logo" className="w-10 h-10" />
+          <span className="font-bold">TransformDoco</span>
         </div>
-        <div className="space-x-2">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline" className="border-[#F5E6D3] text-[#F5E6D3] hover:bg-[#3A6B5A]" onClick={generateSSHLink}>
-                <Users className="mr-2 h-4 w-4" /> Create Collaborative Server
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] bg-[#F5E6D3] text-[#2A4B40]">
-              <DialogHeader>
-                <DialogTitle>Collaborative Server Created</DialogTitle>
-                <DialogDescription>
-                  Scan the QR code or use the SSH link to connect to the server.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="flex justify-center">
-                  <QRCodeSVG value={sshLink} size={200} />
-                </div>
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="ssh-link">SSH Link</Label>
-                  <Input id="ssh-link" value={sshLink} readOnly />
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline" className="border-[#F5E6D3] text-[#F5E6D3] hover:bg-[#3A6B5A]">
-                <Link className="mr-2 h-4 w-4" /> Connect to Our Expert
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] bg-[#F5E6D3] text-[#2A4B40]">
-              <DialogHeader>
-                <DialogTitle>Connect to Our Expert</DialogTitle>
-                <DialogDescription>
-                  Choose how you&apos;d like to connect with our expert.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <Button className="w-full" onClick={() => window.location.href = 'mailto:hashmonks@gmail.com'}>
-                  <Mail className="mr-2 h-4 w-4" /> Email Us
-                </Button>
-                <form onSubmit={handleCallbackRequest}>
-                  <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="phone">Request a Callback</Label>
-                    <Input
-                      id="phone"
-                      placeholder="Enter your phone number"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                    />
-                  </div>
-                  <Button type="submit" className="w-full mt-2">
-                    <Phone className="mr-2 h-4 w-4" /> Request Callback
-                  </Button>
-                </form>
-              </div>
-            </DialogContent>
-          </Dialog>
+        <div className="flex space-x-4">
+          <Button variant="ghost" className="text-[#2A4B40] hover:text-[#D35400] hover:bg-[#F5E6D3]">Home</Button>
+          <Button variant="ghost" className="text-[#2A4B40] hover:text-[#D35400] hover:bg-[#F5E6D3]">Research</Button>
+          <Button variant="ghost" className="text-[#2A4B40] hover:text-[#D35400] hover:bg-[#F5E6D3]">Careers</Button>
+          <Button variant="ghost" className="text-[#2A4B40] hover:text-[#D35400] hover:bg-[#F5E6D3]">About Us</Button>
+        </div>
+        <div className="flex space-x-2">
+          <Button variant="outline" className="border-[#2A4B40] text-[#2A4B40] hover:bg-[#2A4B40] hover:text-[#F5E6D3]">Login</Button>
+          <Button className="bg-[#D35400] text-[#F5E6D3] hover:bg-[#A04000]">Sign Up</Button>
         </div>
       </nav>
-      
-      <main className="container mx-auto mt-8 p-4">
-        <p className="text-xl text-center mb-8 text-[#2A4B40]">
-          Sync your entire folder by providing a root directory and get a machine-readable ready folder in the specified output directory.
-        </p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-          <div className="border-2 border-[#2A4B40] rounded-lg p-4 text-center">
-            <h2 className="text-xl font-bold mb-4">Root Directory</h2>
-            <FileInput
-              id="root-directory"
-              label="Select Root Directory"
-              onChange={(event) => {
-                const file = event.target.files?.[0] || null;
-                setRootDirectory(file);
-              }}
-            />
-            {rootDirectory && (
-              <p className="mt-2 text-[#D35400] text-sm">Selected: {rootDirectory.name}</p>
-            )}
-          </div>
-          
-          <div className="border-2 border-[#2A4B40] rounded-lg p-4 text-center">
-            <h2 className="text-xl font-bold mb-4">Output Directory</h2>
-            <FileInput
-              id="output-directory"
-              label="Select Output Directory"
-              onChange={handleFileChange(setOutputDirectory as Dispatch<SetStateAction<File | null>>)}
-            />
-            {outputDirectory && (
-              <p className="mt-2 text-[#D35400] text-sm">Selected: {outputDirectory}</p>
-            )}
-          </div>
-        </div>
 
-        <div className="mb-8">
-          <div className="flex items-center space-x-2 mb-4">
-            <Input 
-              type="text" 
-              placeholder="Search..." 
-              className="flex-grow text-lg p-6 bg-[#F5E6D3] border-2 border-[#2A4B40] text-[#2A4B40] placeholder-[#5D8A7D]"
-            />
-            <Select value={searchOption} onValueChange={setSearchOption}>
-              <SelectTrigger className="w-[200px] bg-[#F5E6D3] border-2 border-[#2A4B40] text-[#2A4B40]">
-                <SelectValue placeholder="Search by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="keywords">Search through keywords</SelectItem>
-                <SelectItem value="context">Search through context</SelectItem>
-                <SelectItem value="filename">Search through filename</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <Button className="w-full bg-[#D35400] hover:bg-[#A04000] text-[#F5E6D3]">
-            <Search className="mr-2 h-4 w-4" /> Search
-          </Button>
-        </div>
-
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-4 text-center text-[#2A4B40]">File Conversion Tool</h2>
-          <div className="flex items-center space-x-4">
-            <div 
-              className="flex-grow border-2 border-dashed border-[#2A4B40] rounded-lg p-4 text-center cursor-pointer hover:bg-[#E8D5B5] transition-colors"
-              onDragOver={handleDragOver}
-              onDrop={(e) => handleDrop(e, setConvertFile)}
+      <Carousel className="w-full max-w-4xl mx-auto mt-8">
+        {ads.map((ad, index) => (
+          <div
+            key={index}
+            className={`${
+              index === currentAd ? 'block' : 'hidden'
+            } text-center p-8 bg-[#2A4B40]/5 rounded-lg`}
+          >
+            <h2 className="text-2xl font-bold mb-4 text-[#2A4B40]">{ad.title}</h2>
+            <p className="mb-6 text-[#2A4B40]">{ad.description}</p>
+            <Button 
+              className="bg-[#D35400] text-[#F5E6D3] hover:bg-[#A04000]"
+              onClick={handleGetStarted}  // Add this onClick handler
             >
-              <FileType className="mx-auto h-8 w-8 text-[#2A4B40] mb-2" />
-              <p className="text-sm mb-2">Drag and drop non-machine readable document here</p>
-              {convertFile && (
-                <p className="text-[#D35400] text-sm">Selected: {convertFile}</p>
-              )}
-            </div>
-            <Select value={convertFormat} onValueChange={setConvertFormat}>
-              <SelectTrigger className="w-[100px] bg-[#F5E6D3] border-2 border-[#2A4B40] text-[#2A4B40]">
-                <SelectValue placeholder="Format" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="xml">XML</SelectItem>
-                <SelectItem value="json">JSON</SelectItem>
-                <SelectItem value="csv">CSV</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button className="bg-[#D35400] hover:bg-[#A04000] text-[#F5E6D3]">
-              Convert
+              {ad.cta}
             </Button>
           </div>
-        </div>
+        ))}
+      </Carousel>
 
-        <div className="text-center">
-          <Button className="bg-[#2A4B40] hover:bg-[#3A6B5A] text-[#F5E6D3]">
-            <Home className="mr-2 h-4 w-4" /> Return to Homepage
-          </Button>
+      <section className="max-w-4xl mx-auto mt-16">
+        <h2 className="text-2xl font-bold mb-8 text-center text-[#2A4B40]">Our Technological Achievements</h2>
+        <div className="grid grid-cols-2 gap-8">
+          {achievements.map((achievement, index) => (
+            <motion.div
+              key={index}
+              className="flex flex-col items-center space-y-4 p-6 bg-[#2A4B40]/5 rounded-lg border border-[#2A4B40]/10 hover:border-[#2A4B40]/30 transition-colors"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.2 }}
+            >
+              <motion.div
+                className="text-[#D35400]"
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              >
+                {achievement.icon}
+              </motion.div>
+              <span className="font-semibold text-center text-[#2A4B40]">{achievement.text}</span>
+              <span className="text-sm text-[#2A4B40]/70 text-center">{achievement.tech}</span>
+            </motion.div>
+          ))}
         </div>
-      </main>
+      </section>
+
+      <section className="max-w-xl mx-auto mt-16 p-8 bg-[#F5E6D3] rounded-lg shadow-lg border border-[#2A4B40]/20">
+        <h2 className="text-2xl font-bold mb-8 text-center text-[#2A4B40]">User Feedback</h2>
+        <form className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-[#2A4B40]">Email</Label>
+            <Input id="email" type="email" placeholder="your@email.com" required className="border-[#2A4B40] text-[#2A4B40] placeholder-[#2A4B40]/50 focus:ring-[#D35400]" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="phone" className="text-[#2A4B40]">Phone Number</Label>
+            <Input id="phone" type="tel" placeholder="+1234567890" required className="border-[#2A4B40] text-[#2A4B40] placeholder-[#2A4B40]/50 focus:ring-[#D35400]" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="requestType" className="text-[#2A4B40]">Request Type</Label>
+            <Select onValueChange={setFormType} value={formType}>
+              <SelectTrigger id="requestType" className="border-[#2A4B40] text-[#2A4B40] focus:ring-[#D35400]">
+                <SelectValue placeholder="Select request type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="feature">Feature Request</SelectItem>
+                <SelectItem value="callback">Request a Call Back</SelectItem>
+                <SelectItem value="query">User Query</SelectItem>
+                <SelectItem value="bug">Report Bug</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="file" className="text-[#2A4B40]">Attach File (optional)</Label>
+            <Input
+              id="file"
+              type="file"
+              className="border-[#2A4B40] text-[#2A4B40] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#D35400] file:text-[#F5E6D3] hover:file:bg-[#A04000]"
+            />
+          </div>
+          <Button type="submit" className="w-full bg-[#D35400] text-[#F5E6D3] hover:bg-[#A04000]">Submit</Button>
+        </form>
+      </section>
     </div>
   )
 }
